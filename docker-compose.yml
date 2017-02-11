@@ -1,3 +1,10 @@
+# nginx-proxy:
+#   image: jwilder/nginx-proxy
+#   container_name: nginx-proxy
+#   ports:
+#     - "80:80"
+#   volumes:
+#     - /var/run/docker.sock:/tmp/docker.sock:ro
 mongo:
   image: "mongo:3"
   volumes:
@@ -12,8 +19,8 @@ app:
   memswap_limit: "1G"
   working_dir: "/home/node/app"
   volumes: 
-    - ./dist:/home/node/app
+    - .:/home/node/app
   links:
     - mongo:mongo
   ports:
-    - "80:80"
+    - "80:3000"

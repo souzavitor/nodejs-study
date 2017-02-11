@@ -2,5 +2,5 @@ FROM node:6.9.1
 
 RUN npm install pm2 -g
 
-EXPOSE 80 27017
-CMD ["pm2-docker", "process.yml"]
+EXPOSE 3000
+CMD ["pm2", "--no-daemon" "process.yml"]
