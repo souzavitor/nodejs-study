@@ -1,0 +1,19 @@
+mongo:
+  image: "mongo:3"
+  volumes:
+    - /docker/data/mongo:/data/db
+  ports:
+    - "27017:27017"
+app:
+  build: "."
+  # image: "dev/node:1"
+  user: "node"
+  mem_limit: "256m"
+  memswap_limit: "1G"
+  working_dir: "/home/node/app"
+  volumes: 
+    - ./dist:/home/node/app
+  links:
+    - mongo:mongo
+  ports:
+    - "80:80"
