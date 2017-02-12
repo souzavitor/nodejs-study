@@ -4,6 +4,15 @@ import chaiHttp = require('chai-http');
 
 import app from '../../src/app';
 
+process.env.DB_NAME = 'nodejs_study_testing';
+
+import mongoose = require("mongoose");
+
+import { PlaceInterface } from '../../src/interfaces/place.interface';
+import { PlaceModel } from '../../src/models/place.model';
+
+let Place : mongoose.Model<PlaceModel> = require('../../src/services/place.service');
+
 chai.use(chaiHttp);
 const expect = chai.expect;
 
@@ -47,5 +56,15 @@ describe('Place router', () => {
         expect(res.body.data.coordinates).to.exist;
         expect(res.body.data.created_at).to.exist;
       });
+  });
+  it('should delete a place', (done) => {
+    Place.findOne().then(place => {
+      chai.request(app)
+        .del('/api/v1/places/'+ place._id)
+        .then(res => {;
+          expect(res.status).to.eql(204);
+          done();
+        });
+    });
   });
 });

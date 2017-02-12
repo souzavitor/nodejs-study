@@ -27,10 +27,23 @@ export class PlaceRouter {
       })
     }).catch(err => {
       res.status(500);
-      res.send({
-        data: 'service not available'
-      })
+      res.send({data: 'service not available'})
     });
+  }
+
+  public removePlace(req: Request, res: Response, next: NextFunction) {
+    PlaceService.findById(req.params._id).then(place => {
+      PlaceService.remove({_id : place._id}).then(result => {
+        res.status(204);
+        res.send();
+      }).catch(ex => {
+        res.status(500);
+        res.send({data: 'service not available'})
+      });
+    }).catch(ex => {
+      res.status(500);
+      res.send({data: 'service not available'})
+    });;
   }
 
   public createPlace(req: Request, res: Response, next: NextFunction) {
@@ -50,6 +63,7 @@ export class PlaceRouter {
   getRouter() {    
     this.router.get('/', this.getAll);
     this.router.post('/', this.createPlace);
+    this.router.delete('/:_id', this.removePlace);
     return this.router;
   }
 }
