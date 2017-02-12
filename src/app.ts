@@ -29,9 +29,20 @@ class App {
 
   // Configure Express middleware.
   private middleware() : void {
-    // this.express.use(logger('dev'));
+    this.express.use(logger('dev'));
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
+    this.express.use((req, res, next) => {
+      res.setHeader('Access-Control-Allow-Origin', process.env.ALLOW_ORIGIN);
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      if (req.method === 'OPTIONS') {
+        res.status(200);
+        res.send();
+      }
+      next();
+    });
   }
 
   // Configure API endpoints.
