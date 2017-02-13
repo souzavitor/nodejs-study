@@ -28,7 +28,6 @@ gulp.task('browser-sync', ['nodemon', 'watch'], function () {
 // run nodemon on server file changes
 gulp.task('nodemon', function (cb) {
     var started = false;
-
     return nodemon({
         script: 'dist/index.js',
         watch: ['dist/**/*.js']
@@ -50,4 +49,5 @@ gulp.task('watch', function () {
     gulp.watch('src/**/*.ts', ['scripts','nodemon']);
 }); 
 
-gulp.task('default', ['scripts', 'browser-sync']);
+gulp.task('dev', ['scripts', 'browser-sync']);
+gulp.task('default', ['scripts']);
