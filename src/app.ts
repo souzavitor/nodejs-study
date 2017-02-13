@@ -40,8 +40,9 @@ class App {
       if (req.method === 'OPTIONS') {
         res.status(200);
         res.send();
+      } else {
+        next();
       }
-      next();
     });
   }
 

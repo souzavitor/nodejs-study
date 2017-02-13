@@ -60,7 +60,7 @@ export class PlaceRouter {
    * Take each handler, and attach to one of the Express.Router's
    * endpoints.
    */
-  getRouter() {    
+  getRouter() {
     this.router.get('/', this.getAll);
     this.router.post('/', this.createPlace);
     this.router.delete('/:_id', this.removePlace);
