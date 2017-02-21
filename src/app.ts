@@ -10,6 +10,9 @@ import mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
 import PlaceRouter from './routes/place.router';
+import UserRouter from './routes/user.router';
+
+import { AuthService } from './services/auth.service';
 
 /**
  * The application.
@@ -44,6 +47,7 @@ class App {
         next();
       }
     });
+    this.express.use(AuthService.initialize());
   }
 
   // Configure API endpoints.
@@ -58,6 +62,7 @@ class App {
         res.send({});
       });
     this.express.use('/api/v1/places', PlaceRouter);
+    this.express.use('/api/v1/users', UserRouter);
   }
 }
 
