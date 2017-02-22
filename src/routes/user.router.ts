@@ -46,7 +46,7 @@ export class UserRouter {
     }).catch(ex => {
       res.status(500);
       res.send({data: 'service not available'})
-    });;
+    });
   }
 
   public createUser(req: Request, res: Response, next: NextFunction) {
@@ -87,6 +87,15 @@ export class UserRouter {
     }
   }
 
+  getById(req: Request, res: Response, next: NextFunction) {
+    UserService.findById(req.params._id).then(user => {
+      res.send({data: user});
+    }).catch(ex => {
+      res.status(500);
+      res.send({data: 'service not available'})
+    });
+  }
+
   /**
    * Take each handler, and attach to one of the Express.Router's
    * endpoints.
@@ -98,6 +107,7 @@ export class UserRouter {
 
     // private routes
     this.router.get('/', AuthService.authenticate(), this.getAll);
+    this.router.get('/:_id', AuthService.authenticate(), this.getById);
     this.router.delete('/:_id', AuthService.authenticate(), this.removeUser);
 
     return this.router;
