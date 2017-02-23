@@ -7,6 +7,8 @@ import { PlaceModel } from '../models/place.model';
 
 import * as PlaceService from '../services/place.service';
 
+import { AuthService } from '../services/auth.service';
+
 export class PlaceRouter {
   private router: Router
 
@@ -31,6 +33,15 @@ export class PlaceRouter {
     });
   }
 
+  public getById(req: Request, res: Response, next: NextFunction) {
+    PlaceService.findById(req.params._id).then(place => {
+      res.send({data: place})
+    }).catch(ex => {
+      res.status(500);
+      res.send({data: 'service not available'})
+    });
+  }
+
   public removePlace(req: Request, res: Response, next: NextFunction) {
     PlaceService.findById(req.params._id).then(place => {
       PlaceService.remove({_id : place._id}).then(result => {
@@ -43,7 +54,7 @@ export class PlaceRouter {
     }).catch(ex => {
       res.status(500);
       res.send({data: 'service not available'})
-    });;
+    });
   }
 
   public createPlace(req: Request, res: Response, next: NextFunction) {
@@ -61,9 +72,10 @@ export class PlaceRouter {
    * endpoints.
    */
   getRouter() {
-    this.router.get('/', this.getAll);
-    this.router.post('/', this.createPlace);
-    this.router.delete('/:_id', this.removePlace);
+    this.router.get('/', AuthService.authenticate(), this.getAll);
+    this.router.post('/', AuthService.authenticate(), this.createPlace);
+    this.router.get('/:_id', AuthService.authenticate(), this.getById);
+    this.router.delete('/:_id', AuthService.authenticate(), this.removePlace);
     return this.router;
   }
 }

@@ -72,7 +72,15 @@ export class UserRouter {
             } else if (isMatch) {
               let payload = {_id: user._id};
               let token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 60 * 60 });
-              res.json({token: token});
+              res.json({
+                data: {
+                  _id : user._id,
+                  email : user.email,
+                  name : user.name,
+                  username : user.username,
+                  token: token
+                }
+              });
             }
           });
         } else {
@@ -85,6 +93,20 @@ export class UserRouter {
     } else {
       res.sendStatus(401);
     }
+  }
+
+  update(req: Request, res: Response, next: NextFunction) {
+    let data = req.body;
+    UserService.findById(req.params._id).then((user : UserModel) => {
+      user.name = data.name || user.name;
+      user.email = data.email || user.email;
+      user.username = data.username || user.username;
+      user.password = data.password || user.password;
+      res.send({data: user});
+    }).catch(ex => {
+      res.status(500);
+      res.send({data: 'service not available'})
+    });
   }
 
   getById(req: Request, res: Response, next: NextFunction) {
@@ -108,6 +130,7 @@ export class UserRouter {
     // private routes
     this.router.get('/', AuthService.authenticate(), this.getAll);
     this.router.get('/:_id', AuthService.authenticate(), this.getById);
+    this.router.put('/:_id', AuthService.authenticate(), this.update);
     this.router.delete('/:_id', AuthService.authenticate(), this.removeUser);
 
     return this.router;
