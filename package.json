@@ -15,14 +15,17 @@
     "debug": "^2.6.1",
     "dotenv": "^4.0.0",
     "express": "^4.14.0",
+    "express-validator": "^3.1.2",
     "jsonwebtoken": "^7.3.0",
     "mongoose": "^4.8.1",
     "morgan": "^1.7.0",
+    "node-mailer": "^0.1.1",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
     "q": "^1.4.1",
     "typescript": "^2.1.6",
-    "typings": "^2.1.0"
+    "typings": "^2.1.0",
+    "winston": "^2.3.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^1.0.0",

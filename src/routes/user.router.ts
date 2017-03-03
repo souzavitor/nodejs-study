@@ -8,6 +8,8 @@ import { UserModel } from '../models/user.model';
 import * as jwt from 'jsonwebtoken';
 import * as UserService from '../services/user.service';
 
+import validator = require('express-validator');
+
 import { AuthService } from '../services/auth.service';
 
 export class UserRouter {
@@ -20,14 +22,39 @@ export class UserRouter {
     this.router = Router();
   }
 
+  public middleware() {
+    this.router.use(validator({
+      customValidators: {
+        isUsernameTaken : (param, _id) => {
+          return new Promise((resolve, reject) => {
+            let conditions = {
+              username: param
+            };
+            if (typeof _id !== 'undefined') {
+              conditions['_id'] = {$ne: _id};
+            }
+            return UserService.findOne(conditions)
+              .then(user => {
+                if (user) {
+                  return reject(user);
+                }
+                return resolve(true);
+              })
+              .catch(err => {
+                resolve(err)
+              });
+          });
+        }
+      }
+    }));
+  }
+
   /**
    * GET all Users.
    */
   public getAll(req: Request, res: Response, next: NextFunction) {
     UserService.find({}).then(users => {
-      res.send({
-        data : users
-      })
+      res.send({data : users})
     }).catch(err => {
       res.status(500);
       res.send({data: 'service not available'})
@@ -50,12 +77,33 @@ export class UserRouter {
   }
 
   public createUser(req: Request, res: Response, next: NextFunction) {
-    let data = req.body;
-    let user = new UserService(data);
-    user.save().then(result => {
-      res.send({
-        data : result
+    // validate the fields in the body
+    req.checkBody('email', 'Email is invalid').isEmail();
+    req.checkBody('username')
+      .notEmpty().withMessage('Username is required')
+      .isUsernameTaken().withMessage('Username already registered');
+    req.checkBody('password', 'Password is required').notEmpty();
+    req.checkBody('name', 'Name is required').notEmpty();
+
+    req.asyncValidationErrors().then(() => {
+      let data = req.body;
+      data.checked_email = false;
+      let user = new UserService(data);
+      user.save().then((result : any) => {
+        res.send({
+          data: {
+            _id : result._id,
+            name : result.name,
+            email : result.email,
+            username : result.username,
+            created_at: result.created_at
+          }
+        });
+      }).catch(err => {
+        res.status(500).send({data : 'something is wrong'});
       });
+    }).catch(errors => {
+      res.status(400).send({data: errors});
     });
   }
 
@@ -71,7 +119,7 @@ export class UserRouter {
               res.sendStatus(401);
             } else if (isMatch) {
               let payload = {_id: user._id};
-              let token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 60 * 60 });
+              let token = jwt.sign(payload, process.env.JWT_SECRET);
               res.json({
                 data: {
                   _id : user._id,
@@ -99,8 +147,10 @@ export class UserRouter {
     let data = req.body;
     UserService.findById(req.params._id).then((user : UserModel) => {
       user.name = data.name || user.name;
-      user.email = data.email || user.email;
-      user.username = data.username || user.username;
+      if (typeof data.email !== 'undefined') {
+        user.email = data.email;
+        user.checked_email = false;
+      }
       user.password = data.password || user.password;
       res.send({data: user});
     }).catch(ex => {
@@ -123,6 +173,7 @@ export class UserRouter {
    * endpoints.
    */
   getRouter() {
+    this.middleware();
     // public routes
     this.router.post('/authenticate', this.authenticate);
     this.router.post('/', this.createUser);

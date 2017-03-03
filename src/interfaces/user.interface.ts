@@ -3,4 +3,5 @@ export interface UserInterface {
   email? : string;
   username? : string;
   password? : string;
+  checked_email : boolean;
 }
