@@ -8,6 +8,7 @@ export var userSchema : Schema = new Schema({
   username : String,
   password : String,
   checked_email : Boolean,
+  email_verification_token : String,
   created_at : Date,
   updated_at : Date,
 }, { versionKey: false });

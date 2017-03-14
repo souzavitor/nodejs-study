@@ -4,13 +4,16 @@ import mongoose = require("mongoose");
 
 import { UserInterface } from '../interfaces/user.interface';
 import { UserModel } from '../models/user.model';
+import { EmailModel } from '../models/email.model';
 
+import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import * as UserService from '../services/user.service';
 
 import validator = require('express-validator');
 
 import { AuthService } from '../services/auth.service';
+import { EmailService } from '../services/email.service';
 
 export class UserRouter {
   private router: Router
@@ -53,7 +56,7 @@ export class UserRouter {
    * GET all Users.
    */
   public getAll(req: Request, res: Response, next: NextFunction) {
-    UserService.find({}).then(users => {
+    UserService.find({}, {password: false}).then(users => {
       res.send({data : users})
     }).catch(err => {
       res.status(500);
@@ -90,6 +93,7 @@ export class UserRouter {
       data.checked_email = false;
       let user = new UserService(data);
       user.save().then((result : any) => {
+        res.status(201);
         res.send({
           data: {
             _id : result._id,
@@ -152,7 +156,21 @@ export class UserRouter {
         user.checked_email = false;
       }
       user.password = data.password || user.password;
-      res.send({data: user});
+      user.save().then((newUser : UserModel) => {
+        res.json({
+          data: {
+            _id : newUser._id,
+            email : newUser.email,
+            name : newUser.name,
+            username : newUser.username,
+            created_at: newUser.created_at,
+            updated_at: newUser.updated_at
+          }
+        });
+      }).catch(ex => {
+        res.status(500);
+        res.send({data: 'service not available'})
+      });
     }).catch(ex => {
       res.status(500);
       res.send({data: 'service not available'})
@@ -166,6 +184,37 @@ export class UserRouter {
       res.status(500);
       res.send({data: 'service not available'})
     });
+  }
+
+  sendEmailVerification(req: Request, res: Response, next: NextFunction) {
+    let key = bcrypt.genSaltSync(8);
+    UserService.findById(req.params._id).then((user : UserModel) => {
+      user.email_verification_token = key;
+      user.save().then((savedUser : UserModel) => {
+        let email = new EmailModel();
+        email.to = user.email;
+        email.template = "email-verification";
+        email.subject = "Verification email";
+        email.data = user;
+        EmailService.queueEmail(email).then((result : any) => {
+          res.status(201);
+          res.send({data: 'OK'});
+        }).catch(ex => {
+          res.status(500);
+          res.send({data: 'service not available'})
+        });
+      }).catch(ex => {
+        res.status(500);
+        res.send({data: 'service not available'})
+      });
+    }).catch(ex => {
+      res.status(500);
+      res.send({data: 'service not available'})
+    });
+  }
+
+  checkEmailVerification(req: Request, res: Response, next: NextFunction) {
+
   }
 
   /**
@@ -183,6 +232,9 @@ export class UserRouter {
     this.router.get('/:_id', AuthService.authenticate(), this.getById);
     this.router.put('/:_id', AuthService.authenticate(), this.update);
     this.router.delete('/:_id', AuthService.authenticate(), this.removeUser);
+
+    this.router.post('send-email-verification/:_id', this.sendEmailVerification);
+    this.router.get('check-email-verification/:_id', this.checkEmailVerification);
 
     return this.router;
   }
