@@ -233,8 +233,8 @@ export class UserRouter {
     this.router.put('/:_id', AuthService.authenticate(), this.update);
     this.router.delete('/:_id', AuthService.authenticate(), this.removeUser);
 
-    this.router.post('send-email-verification/:_id', this.sendEmailVerification);
-    this.router.get('check-email-verification/:_id', this.checkEmailVerification);
+    this.router.post('/send-email-verification/:_id', this.sendEmailVerification);
+    this.router.get('/check-email-verification/:_id', this.checkEmailVerification);
 
     return this.router;
   }

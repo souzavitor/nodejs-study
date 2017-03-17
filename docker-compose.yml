@@ -2,7 +2,7 @@ nginx-proxy:
   image: jwilder/nginx-proxy
   container_name: nginx-proxy
   ports:
-    - "80:80"
+    - "8080:80"
   volumes:
     - /var/run/docker.sock:/tmp/docker.sock:ro
 mongo:
@@ -16,13 +16,12 @@ app:
   build: "."
   container_name: "nodejsapp"
   # image: "dev/node:1"
-  user: "node"
+  user: "root"
   mem_limit: "256m"
   memswap_limit: "1G"
-  # working_dir: "/home/node/app"
-  # command: "tailf ./.env"
-  # volumes: 
-  #   - .:/home/node/app
+  volumes: 
+    - .:/usr/src/app
+    - /tmp/logs:/tmp/logs
   links:
     - mongo:mongo
   environment:
