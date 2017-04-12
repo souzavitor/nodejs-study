@@ -2,7 +2,7 @@ nginx-proxy:
   image: jwilder/nginx-proxy
   container_name: nginx-proxy
   ports:
-    - "8080:80"
+    - "80:80"
   volumes:
     - /var/run/docker.sock:/tmp/docker.sock:ro
 mongo:
@@ -19,10 +19,10 @@ app:
   user: "root"
   mem_limit: "256m"
   memswap_limit: "1G"
-  volumes: 
-    - .:/usr/src/app
+  volumes:
+    # - .:/usr/src/app
     - /tmp/logs:/tmp/logs
   links:
-    - mongo:mongo
+    - mongo:mongo.local
   environment:
     - VIRTUAL_HOST=nodejsstudy.local

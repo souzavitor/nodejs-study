@@ -201,15 +201,15 @@ export class UserRouter {
           res.send({data: 'OK'});
         }).catch(ex => {
           res.status(500);
-          res.send({data: 'service not available'})
+          res.send({data: 'service not available. Queue error.'})
         });
       }).catch(ex => {
         res.status(500);
-        res.send({data: 'service not available'})
+        res.send({data: 'service not available. Database error save token'})
       });
     }).catch(ex => {
       res.status(500);
-      res.send({data: 'service not available'})
+      res.send({data: 'service not available. Database error could not find user'})
     });
   }
 
