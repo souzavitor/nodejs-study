@@ -3,7 +3,7 @@ import { EmailModel } from '../models/email.model';
 import * as nodemailer from 'nodemailer';
 import * as htmlToText from 'nodemailer-html-to-text';
 
-import * as sqs from './queue/sqs.factory';
+import * as sqs from '../factories/sqs.factory';
 
 export class EmailService {
   public static sendEmail(email : EmailModel) : Promise<Object> {
@@ -17,7 +17,7 @@ export class EmailService {
       }
     });
     transporter.use('compile', htmlToText())
-    let html = '';
+    let html = 'Teste';
 
     // setup e-mail data with unicode symbols
     let mailOptions = {
@@ -47,5 +47,5 @@ export class EmailService {
         resolve(data);
       });
     });
-  } 
+  }
 }
