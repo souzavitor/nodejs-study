@@ -194,7 +194,7 @@ export class UserRouter {
         let email = new EmailModel();
         email.to = user.email;
         email.template = "email-verification";
-        email.subject = "Verification email";
+        email.subject = "Hey, please check your email!";
         email.data = user;
         EmailService.queueEmail(email).then((result : any) => {
           res.status(201);
@@ -214,7 +214,21 @@ export class UserRouter {
   }
 
   checkEmailVerification(req: Request, res: Response, next: NextFunction) {
-
+    UserService.update(
+      {email_verification_token: req.params.token},
+      {$set : {
+        checked_email: true,
+        email_verification_token : ''
+      }}
+    ).then((result) => {
+      console.log(result);
+      res.status(200);
+      res.send({data: 'OK'});
+    }).catch(ex => {
+      console.log(ex);
+      res.status(500);
+      res.send({data: 'service not available.'})
+    });
   }
 
   /**
@@ -234,7 +248,7 @@ export class UserRouter {
     this.router.delete('/:_id', AuthService.authenticate(), this.removeUser);
 
     this.router.post('/send-email-verification/:_id', this.sendEmailVerification);
-    this.router.get('/check-email-verification/:_id', this.checkEmailVerification);
+    this.router.get('/check-email-verification/:token', this.checkEmailVerification);
 
     return this.router;
   }

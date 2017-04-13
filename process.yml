@@ -1,5 +1,9 @@
 apps:
   - script : 'dist/index.js'
-    name : 'APP'
+    name : 'app'
     exec_mode : 'cluster'
-    instances : 4
+    instances : 3
+  - script : 'dist/workers/queue-consumers/verify-user-email.js'
+    name : 'verify_email_consumer'
+    exec_mode : 'cluster'
+    instances : 1

@@ -10,12 +10,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/email-templates": "0.0.32",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.15.2",
     "debug": "^2.6.1",
     "dotenv": "^4.0.0",
+    "email-templates": "^2.5.4",
     "express": "^4.14.0",
     "express-validator": "^3.1.2",
+    "jade": "^1.11.0",
     "jsonwebtoken": "^7.3.0",
     "mongoose": "^4.8.1",
     "morgan": "^1.7.0",
@@ -23,6 +26,8 @@
     "nodemailer-html-to-text": "^2.1.0",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
+    "path": "^0.12.7",
+    "pug": "^2.0.0-beta11",
     "q": "^1.4.1",
     "sqs-consumer": "^3.5.0",
     "typescript": "^2.1.6",
@@ -30,6 +35,7 @@
     "winston": "^2.3.1"
   },
   "devDependencies": {
+    "@types/winston": "^2.3.0",
     "@types/bcrypt": "^1.0.0",
     "@types/body-parser": "0.0.33",
     "@types/chai": "^3.4.34",

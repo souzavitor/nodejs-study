@@ -1,35 +1,40 @@
 import { EmailModel } from '../models/email.model';
+import { EmailTemplate } from 'email-templates';
 
-import * as nodemailer from 'nodemailer';
-import * as htmlToText from 'nodemailer-html-to-text';
+import * as path from 'path';
 
 import * as sqs from '../factories/sqs.factory';
+import * as mailer from '../factories/mailer.factory';
 
 export class EmailService {
   public static sendEmail(email : EmailModel) : Promise<Object> {
-    // create reusable transporter object using the default SMTP transport
-    let transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
-      port: process.env.MAIL_PORT,
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASSWORD
-      }
-    });
-    transporter.use('compile', htmlToText())
-    let html = 'Teste';
-
     // setup e-mail data with unicode symbols
     let mailOptions = {
-      from: process.env.from,
+      from: process.env.MAIL_FROM,
       to: email.to,
       subject: email.subject,
-      html: html
+      html : ''
     };
     return new Promise<Object>((resolve, reject) => {
-      transporter.sendMail(mailOptions)
-        .then((result : any) => resolve(result))
-        .catch((err : any) => reject(err))
+      let templateDir = path.join(
+        __dirname,
+        '../../',
+        'templates',
+        email.template
+      );
+      
+      let template = new EmailTemplate(templateDir)
+
+      template.render(email.data, (err, result) => {
+        if (err) {
+          reject(err);
+        }
+
+        mailOptions.html = result.html;
+        mailer.sendMail(mailOptions)
+          .then((result : any) => resolve(result))
+          .catch((err : any) => reject(err))
+      });
     });
   }
 
