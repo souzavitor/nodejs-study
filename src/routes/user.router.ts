@@ -133,14 +133,18 @@ export class UserRouter {
                   token: token
                 }
               });
+            } else {
+              res.status(401);
+              res.send({error: 'Username and/or password invalid'});
             }
           });
         } else {
-          res.sendStatus(401);
+          res.status(401);
+          res.send({error: 'Username and/or password invalid'});
         }
       }).catch(err => {
         res.status(500);
-        res.send({data: 'service not available'})
+        res.send({error: 'Something is not right'})
       });
     } else {
       res.sendStatus(401);
@@ -150,26 +154,34 @@ export class UserRouter {
   update(req: Request, res: Response, next: NextFunction) {
     let data = req.body;
     UserService.findById(req.params._id).then((user : UserModel) => {
-      user.name = data.name || user.name;
-      if (typeof data.email !== 'undefined') {
-        user.email = data.email;
-        user.checked_email = false;
-      }
-      user.password = data.password || user.password;
-      user.save().then((newUser : UserModel) => {
-        res.json({
-          data: {
-            _id : newUser._id,
-            email : newUser.email,
-            name : newUser.name,
-            username : newUser.username,
-            created_at: newUser.created_at,
-            updated_at: newUser.updated_at
-          }
+
+      // validate the fields in the body
+      req.checkBody('email', 'Email is invalid').isEmail();
+
+      req.asyncValidationErrors().then(() => {
+        user.name = data.name || user.name;
+        if (typeof data.email !== 'undefined') {
+          user.email = data.email;
+          user.checked_email = false;
+        }
+        user.password = data.password || user.password;
+        user.save().then((newUser : UserModel) => {
+          res.json({
+            data: {
+              _id : newUser._id,
+              email : newUser.email,
+              name : newUser.name,
+              username : newUser.username,
+              created_at: newUser.created_at,
+              updated_at: newUser.updated_at
+            }
+          });
+        }).catch(ex => {
+          res.status(500);
+          res.send({data: 'service not available'})
         });
-      }).catch(ex => {
-        res.status(500);
-        res.send({data: 'service not available'})
+      }).catch(errors => {
+        res.status(400).send({data: errors});
       });
     }).catch(ex => {
       res.status(500);
@@ -195,7 +207,7 @@ export class UserRouter {
         email.to = user.email;
         email.template = "email-verification";
         email.subject = "Hey, please check your email!";
-        email.data = user;
+        email.data = savedUser;
         EmailService.queueEmail(email).then((result : any) => {
           res.status(201);
           res.send({data: 'OK'});

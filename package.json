@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/email-templates": "0.0.32",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.15.2",
     "debug": "^2.6.1",
@@ -18,7 +17,6 @@
     "email-templates": "^2.5.4",
     "express": "^4.14.0",
     "express-validator": "^3.1.2",
-    "jade": "^1.11.0",
     "jsonwebtoken": "^7.3.0",
     "mongoose": "^4.8.1",
     "morgan": "^1.7.0",
@@ -35,6 +33,7 @@
     "winston": "^2.3.1"
   },
   "devDependencies": {
+    "@types/email-templates": "0.0.32",
     "@types/winston": "^2.3.0",
     "@types/bcrypt": "^1.0.0",
     "@types/body-parser": "0.0.33",

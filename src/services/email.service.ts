@@ -15,6 +15,12 @@ export class EmailService {
       subject: email.subject,
       html : ''
     };
+
+    let data = {
+      name: email.data.name,
+      email_verification_link: process.env.FRONTEND_HOST + '/users/confirm-email-verification?key=' + email.data.email_verification_token
+    };
+
     return new Promise<Object>((resolve, reject) => {
       let templateDir = path.join(
         __dirname,
@@ -22,10 +28,10 @@ export class EmailService {
         'templates',
         email.template
       );
-      
+
       let template = new EmailTemplate(templateDir)
 
-      template.render(email.data, (err, result) => {
+      template.render(data, (err, result) => {
         if (err) {
           reject(err);
         }

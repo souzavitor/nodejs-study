@@ -22,11 +22,6 @@ let app = Consumer.create({
 
     logger.info('New message received.', logInfo);
 
-    let data = {
-      name: msgBody.data.name,
-      email_verification_link: process.env.FRONTEND_HOST + '/users/confirm-email-verification?key=' + msgBody.data.email_verification_token
-    };
-
     return EmailService.sendEmail(msgBody).then((result) => {
       logger.info('Email sent.', logInfo);
       done();
