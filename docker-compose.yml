@@ -5,13 +5,13 @@ nginx-proxy:
     - "80:80"
   volumes:
     - /var/run/docker.sock:/tmp/docker.sock:ro
-ng2:
-  image: "ng2:1"
-  container_name: "ng2study"
-  volumes:
-    - ~/private/ng2-study/dist:/var/www/html
-  environment:
-    - VIRTUAL_HOST=ng2study.local
+# ng2:
+#   image: "ng2:1"
+#   container_name: "ng2study"
+#   volumes:
+#     - ~/private/ng2-study/dist:/var/www/html
+#   environment:
+#     - VIRTUAL_HOST=ng2study.local
 mongo:
   image: "mongo:3"
   container_name: "mongo.local"

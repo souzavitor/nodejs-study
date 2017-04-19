@@ -124,13 +124,14 @@ export class UserRouter {
             } else if (isMatch) {
               let payload = {_id: user._id};
               let token = jwt.sign(payload, process.env.JWT_SECRET);
+              res.cookie('jwt', token, {httpOnly: true});
               res.json({
                 data: {
                   _id : user._id,
                   email : user.email,
                   name : user.name,
                   username : user.username,
-                  token: token
+                  // token: token
                 }
               });
             } else {

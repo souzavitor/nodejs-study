@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
 
 global.Promise = require('q').Promise;
 import mongoose = require("mongoose");
@@ -47,6 +48,7 @@ class App {
         next();
       }
     });
+    this.express.use(cookieParser());
     this.express.use(AuthService.initialize());
   }
 
