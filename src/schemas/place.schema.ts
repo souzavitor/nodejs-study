@@ -1,6 +1,7 @@
 import { Schema } from "mongoose";
 
 export var placeSchema: Schema = new Schema({
+  user_id : Schema.Types.ObjectId,
   label : String,
   address : String,
   number_address : String,

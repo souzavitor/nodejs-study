@@ -23,7 +23,7 @@ export class PlaceRouter {
    * GET all Places.
    */
   public getAll(req: Request, res: Response, next: NextFunction) {
-    PlaceService.find({}).then(places => {
+    PlaceService.find({user_id : req.params.user_id}).then(places => {
       res.send({
         data : places
       })
@@ -72,7 +72,7 @@ export class PlaceRouter {
    * endpoints.
    */
   getRouter() {
-    this.router.get('/', AuthService.authenticate(), this.getAll);
+    this.router.get('/:user_id', AuthService.authenticate(), this.getAll);
     this.router.post('/', AuthService.authenticate(), this.createPlace);
     this.router.get('/:_id', AuthService.authenticate(), this.getById);
     this.router.delete('/:_id', AuthService.authenticate(), this.removePlace);

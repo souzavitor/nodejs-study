@@ -31,6 +31,6 @@ export class AuthService {
       return passport.initialize();
   }
   static authenticate() {
-    return passport.authenticate("jwt", {session : false})
+    return passport.authenticate("jwt", {session : false, assignProperty: 'user'});
   }
 }

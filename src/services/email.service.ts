@@ -18,7 +18,7 @@ export class EmailService {
 
     let data = {
       name: email.data.name,
-      email_verification_link: process.env.FRONTEND_HOST + '/users/confirm-email-verification?key=' + email.data.email_verification_token
+      email_verification_link: process.env.FRONTEND_HOST + '/login?verify_email=' + email.data.email_verification_token
     };
 
     return new Promise<Object>((resolve, reject) => {

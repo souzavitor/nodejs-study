@@ -226,18 +226,27 @@ export class UserRouter {
   }
 
   checkEmailVerification(req: Request, res: Response, next: NextFunction) {
+    if (!req.params.token) {
+      res.status(400);
+      res.send({data: [{param: 'token', msg: 'verification token value is missing'}]});
+    }
+
+    let key = decodeURIComponent(req.params.token);
     UserService.update(
-      {email_verification_token: req.params.token},
+      {_id: req.user._id, email_verification_token: key},
       {$set : {
         checked_email: true,
         email_verification_token : ''
       }}
     ).then((result) => {
-      console.log(result);
-      res.status(200);
-      res.send({data: 'OK'});
+      if (result.nModified === 1) {
+        res.status(200);
+        res.send({data: 'OK'});
+      } else {
+        res.status(400);
+        res.send({data: 'verification token is not right'});
+      }
     }).catch(ex => {
-      console.log(ex);
       res.status(500);
       res.send({data: 'service not available.'})
     });
@@ -249,18 +258,18 @@ export class UserRouter {
    */
   getRouter() {
     this.middleware();
+
     // public routes
     this.router.post('/authenticate', this.authenticate);
     this.router.post('/', this.createUser);
+    this.router.post('/send-email-verification/:_id', this.sendEmailVerification);
 
     // private routes
     this.router.get('/', AuthService.authenticate(), this.getAll);
     this.router.get('/:_id', AuthService.authenticate(), this.getById);
     this.router.put('/:_id', AuthService.authenticate(), this.update);
     this.router.delete('/:_id', AuthService.authenticate(), this.removeUser);
-
-    this.router.post('/send-email-verification/:_id', this.sendEmailVerification);
-    this.router.get('/check-email-verification/:token', this.checkEmailVerification);
+    this.router.get('/check-email-verification/:token', AuthService.authenticate(), this.checkEmailVerification);
 
     return this.router;
   }
