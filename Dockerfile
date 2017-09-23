@@ -1,8 +1,6 @@
 FROM node:6.9.1-onbuild
 
-RUN npm i -g pm2 node-gyp gulp
-
-RUN gulp
+RUN npm i -g pm2 node-gyp
 
 RUN mkdir -p dist/tmp
 RUN touch dist/tmp/app.log
