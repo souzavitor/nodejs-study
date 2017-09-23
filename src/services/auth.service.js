@@ -1,7 +1,10 @@
-import * as passport from 'passport';
-import { Strategy, ExtractJwt } from 'passport-jwt';
+'use strict';
 
-import * as UserService from './user.service';
+const passport = require('passport');
+const Strategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+
+const UserService = require('./user.service');
 
 var localOptions = {
   usernameField: 'email'
@@ -26,11 +29,9 @@ var jwtLogin = new Strategy(jwtOptions, (payload, done) => {
 });
 passport.use(jwtLogin);
 
-export class AuthService {
-  static initialize() {
-      return passport.initialize();
-  }
-  static authenticate() {
-    return passport.authenticate("jwt", {session : false, assignProperty: 'user'});
-  }
+exports.initialize = () => {
+  return passport.initialize();
+}
+exports.authenticate = () =>{
+  return passport.authenticate("jwt", {session : false, assignProperty: 'user'});
 }

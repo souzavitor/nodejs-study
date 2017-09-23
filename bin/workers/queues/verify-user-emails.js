@@ -1,11 +1,14 @@
-import * as dotenv from 'dotenv';
+#!/usr/bin/env node
+'use strict';
+
+const dotenv = require('dotenv');
 dotenv.config();
 
-import * as logger from '../../factories/logger.factory';
-import * as sqs from '../../factories/sqs.factory';
+const logger = require('../../../src/factories/logger.factory');
+const sqs = require('../../../src/factories/sqs.factory');
 
-import * as Consumer from 'sqs-consumer';
-import { EmailService } from '../../services/email.service';
+const Consumer = require('sqs-consumer');
+const EmailService = require('../../../src/services/email.service');
 
 let url = process.env.SEND_EMAIL_QUEUE_URL;
 let app = Consumer.create({
@@ -33,7 +36,7 @@ let app = Consumer.create({
 });
 
 app.on('error', function (err) {
-  console.log(err);
+  logger.error('Something has gone wrong!', err);
 });
 
 app.start();

@@ -1,7 +1,10 @@
-import { Schema } from "mongoose";
+'use strict';
 
-export var placeSchema: Schema = new Schema({
-  user_id : Schema.Types.ObjectId,
+const mongoose = require("mongoose");
+
+// create place schema
+const placeSchema = new mongoose.Schema({
+  user_id : mongoose.Schema.Types.ObjectId,
   label : String,
   address : String,
   number_address : String,
@@ -18,3 +21,4 @@ placeSchema.pre("save", function(next) {
   }
   next();
 });
+exports.placeSchema = placeSchema;

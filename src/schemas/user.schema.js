@@ -1,8 +1,11 @@
-import { Schema } from 'mongoose';
+'use strict';
 
-import * as bcrypt from 'bcrypt';
+const mongoose = require('mongoose');
 
-export var userSchema : Schema = new Schema({
+const bcrypt = require('bcrypt');
+
+// create user schema
+const userSchema = new mongoose.Schema({
   name : String,
   email : String,
   username : String,
@@ -21,11 +24,11 @@ userSchema.pre("save", function(next) {
 
   let user = this;
   let SALT_FACTOR = 5;
- 
+
   if(!user.isModified('password')){
     return next();
-  } 
- 
+  }
+
   bcrypt.genSalt(SALT_FACTOR, (err, salt) => {
     if (err) {
       return next(err);
@@ -49,3 +52,5 @@ userSchema.methods.checkPassword = function (passAttempt, cb) {
     }
   });
 };
+
+exports.userSchema = userSchema;

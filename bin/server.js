@@ -1,29 +1,40 @@
-import * as http from 'http';
-import * as debug from 'debug';
-import * as dotenv from 'dotenv';
+#!/usr/bin/env node
+'use strict';
 
+const debug = require('debug')('source:server');
+const http = require('http');
+const dotenv = require('dotenv');
+
+// get variables from .env file and set in global variable "process.env"
 dotenv.config();
 
-import App from './app';
+// set "q" promise for mongoose
+global.Promise = require('q').Promise;
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
 
-debug('ts-express:server');
+const app = require('../src/app');
 
+debug('Express server...');
+
+// set server port
 const port = normalizePort(process.env.PORT || 3000);
-App.set('port', port);
+app.set('port', port);
 
-const server = http.createServer(App);
+// create express server
+const server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-function normalizePort(val: number|string): number|string|boolean {
-  let port: number = (typeof val === 'string') ? parseInt(val, 10) : val;
+function normalizePort(val ) {
+  let port = (typeof val === 'string') ? parseInt(val, 10) : val;
   if (isNaN(port)) return val;
   else if (port >= 0) return port;
   else return false;
 }
 
-function onError(error: NodeJS.ErrnoException): void {
+function onError(error) {
   if (error.syscall !== 'listen') throw error;
   let bind = (typeof port === 'string') ? 'Pipe ' + port : 'Port ' + port;
   switch(error.code) {
@@ -40,8 +51,10 @@ function onError(error: NodeJS.ErrnoException): void {
   }
 }
 
-function onListening(): void {
+function onListening() {
   let addr = server.address();
   let bind = (typeof addr === 'string') ? `pipe ${addr}` : `port ${addr.port}`;
   debug(`Listening on ${bind}`);
 }
+
+module.exports = server;
