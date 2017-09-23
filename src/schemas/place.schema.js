@@ -21,4 +21,4 @@ placeSchema.pre("save", function(next) {
   }
   next();
 });
-exports.placeSchema = placeSchema;
+module.exports = placeSchema;

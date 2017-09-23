@@ -53,4 +53,4 @@ userSchema.methods.checkPassword = function (passAttempt, cb) {
   });
 };
 
-exports.userSchema = userSchema;
+module.exports = userSchema;
