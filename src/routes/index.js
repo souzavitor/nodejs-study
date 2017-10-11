@@ -98,8 +98,8 @@ function registerCorsHandler(app) {
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type,Authorization');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     if (req.method === 'OPTIONS') {
-      res.status(200);
-      res.send();
+      res.status(204);
+      res.send({});
     } else {
       next();
     }

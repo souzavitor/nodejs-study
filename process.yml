@@ -2,6 +2,8 @@ apps:
   - script : 'bin/server.js'
     name : 'app'
     exec_mode : 'cluster'
+    watch: true
+    ignore_watch : ["node_modules", "tmp"]
     instances : 3
   - script : 'bin/workers/queue-consumers/verify-user-email.js'
     name : 'verify_email_consumer'
