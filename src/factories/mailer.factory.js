@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const nodemailer = require('nodemailer');
-const htmlToText = require('nodemailer-html-to-text').htmlToText;
+const nodemailer = require("nodemailer");
+const htmlToText = require("nodemailer-html-to-text").htmlToText;
 
 // create reusable transporter object using the default SMTP transport
 var transporter = nodemailer.createTransport({
@@ -12,6 +12,6 @@ var transporter = nodemailer.createTransport({
     pass: process.env.MAIL_PASSWORD
   }
 });
-transporter.use('compile', htmlToText());
+transporter.use("compile", htmlToText());
 
 module.export = transporter;
