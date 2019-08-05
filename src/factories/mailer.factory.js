@@ -14,4 +14,4 @@ var transporter = nodemailer.createTransport({
 });
 transporter.use("compile", htmlToText());
 
-module.export = transporter;
+module.exports = transporter;
