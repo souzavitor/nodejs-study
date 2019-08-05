@@ -10,9 +10,9 @@
     "lint": "esw .",
     "lint:watch": "esw . -w",
     "test:single": "npm run unit-tests && npm run integration-tests",
-    "unit-tests": "mocha --check-leaks --harmony app/**/*.spec.js",
-    "unit-tests:watch": "mocha --check-leaks --harmony app/**/*.spec.js -w",
-    "integration-tests": "mocha --check-leaks --harmony app/**/*.integration.js",
+    "unit-tests": "mocha --check-leaks --harmony src/**/*.spec.js",
+    "unit-tests:watch": "mocha --check-leaks --harmony src/**/*.spec.js -w",
+    "integration-tests": "mocha --check-leaks --harmony src/**/*.integration.js",
     "coverage": "npm run coverage-unit-tests && npm run coverage-integration-tests"
   },
   "author": "",
