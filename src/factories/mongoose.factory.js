@@ -7,22 +7,21 @@ const mongoose = require("mongoose");
  *
  * @return mongoose.connection
  */
-function createConnection() {
-  var user = "";
-  var host = process.env.DB_HOST;
-  var port = process.env.DB_PORT || "27017";
-  var dbname = process.env.DB_NAME;
+function connectDb() {
+  let user = process.env.DB_USERNAME || "";
+  let host = process.env.DB_HOST;
+  let port = process.env.DB_PORT || "27017";
+  let dbname = process.env.DB_NAME;
 
-  user = process.env.DB_USERNAME || "";
   if (user) {
     user =
       process.env.DB_USERNAME && process.env.DB_PASSWORD
         ? ":" + process.env.DB_PASSWORD + "@"
         : "";
   }
-  return mongoose.createConnection(
+  return mongoose.connect(
     "mongodb://" + user + host + ":" + port + "/" + dbname
   );
 }
 
-module.exports = createConnection();
+module.exports = connectDb;
