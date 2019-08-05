@@ -1,13 +1,17 @@
-'use strict';
+"use strict";
 
-const path = require('path');
-const bodyParser = require('body-parser');
-const expressWinston = require('express-winston');
-const appLogger = require('../factories/logger.factory');
+const path = require("path");
+const bodyParser = require("body-parser");
+const expressWinston = require("express-winston");
+const appLogger = require("../factories/logger.factory");
 
 // get routers
-const placeRouter = require('./place.router');
-const userRouter = require('./user.router');
+const placeRouter = require("./place.router");
+const userRouter = require("./user.router");
+
+// initiate swagger UI
+var swaggerUi = require("swagger-ui-express"),
+  swaggerDocument = require("./swagger.json");
 
 /**
  * Register application pre middleware
@@ -18,11 +22,11 @@ const userRouter = require('./user.router');
  * @param express app
  * @return void
  */
-exports.registerPreMiddleware = (app) => {
+exports.registerPreMiddleware = app => {
   registerLoggerHandler(app);
   registerBodyParserHandler(app);
   registerCorsHandler(app);
-}
+};
 
 /**
  * Register application pos middleware
@@ -32,10 +36,10 @@ exports.registerPreMiddleware = (app) => {
  * @param express app
  * @return void
  */
-exports.registerPosMiddleware = (app) => {
+exports.registerPosMiddleware = app => {
   registerErrorHandler(app);
   registerNotFoundHandler(app);
-}
+};
 
 /**
  * Set application routes
@@ -43,13 +47,15 @@ exports.registerPosMiddleware = (app) => {
  * @param express app
  * @return void
  */
-exports.registerRoutes = (app) => {
-  app.get('/', (req, res) => {
-    res.send({'version':'1.0.0'});
+exports.registerRoutes = app => {
+  app.get("/", (req, res) => {
+    res.send({ version: "1.0.0" });
   });
-  app.use('/api/v1/places', placeRouter);
-  app.use('/api/v1/users', userRouter);
-}
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+  app.use("/api/v1/places", placeRouter);
+  app.use("/api/v1/users", userRouter);
+};
 
 /**
  * Register error handler for status code 500
@@ -58,16 +64,14 @@ exports.registerRoutes = (app) => {
  * @return void
  */
 function registerErrorHandler(app) {
-  if (process.env.APP_ENV === 'development') {
+  if (process.env.APP_ENV === "development") {
     app.use((err, req, res, next) => {
-      res.status(err.status || 500)
-        .send({message: err.message, error: err});
+      res.status(err.status || 500).send({ message: err.message, error: err });
     });
   }
 
   app.use((err, req, res, next) => {
-    res.status(err.status || 500)
-      .send(err.message);
+    res.status(err.status || 500).send(err.message);
   });
 }
 
@@ -81,7 +85,7 @@ function registerNotFoundHandler(app) {
   // catch 404 and forward to error handler
   app.use((req, res, next) => {
     res.status(404);
-    res.send({'error': 'page not found.'});
+    res.send({ error: "page not found." });
   });
 }
 
@@ -93,11 +97,17 @@ function registerNotFoundHandler(app) {
  */
 function registerCorsHandler(app) {
   app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', process.env.ALLOW_ORIGIN);
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type,Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    if (req.method === 'OPTIONS') {
+    res.setHeader("Access-Control-Allow-Origin", process.env.ALLOW_ORIGIN);
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "X-Requested-With,Content-Type,Authorization"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    if (req.method === "OPTIONS") {
       res.status(204);
       res.send({});
     } else {

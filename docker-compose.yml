@@ -28,7 +28,7 @@ app:
   memswap_limit: "1G"
   volumes:
     - .:/usr/src/app
-    # - /tmp/logs:/usr/src/app/tmp/logs
+    # - ./tmp/logs:/usr/src/app/tmp/logs
   links:
     - mongo:mongo.local
   environment:

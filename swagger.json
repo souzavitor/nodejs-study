@@ -1,0 +1,11 @@
+{
+    "openapi":"3.0.2",
+    "info": {
+        "title":"NodeJS Study API",
+        "version":"1.0"
+    },
+    "servers": [
+        {"url":"https://nodejsstudy.local/api/v1"}
+    ],
+    "paths": {}
+}
