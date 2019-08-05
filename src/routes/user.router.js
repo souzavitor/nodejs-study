@@ -31,7 +31,11 @@ function registerRoutes(router) {
   router.get("/:_id", AuthService.authenticate(), getById);
   router.put("/:_id", AuthService.authenticate(), updateUser);
   router.delete("/:_id", AuthService.authenticate(), removeUser);
-  // router.get('/check-email-verification/:token', AuthService.authenticate(), checkEmailVerification);
+  router.get(
+    "/check-email-verification/:token",
+    AuthService.authenticate(),
+    checkEmailVerification
+  );
 }
 
 function registerMiddleware(router) {
